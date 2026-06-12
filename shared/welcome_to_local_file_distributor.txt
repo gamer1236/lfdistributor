@@ -1,0 +1,13 @@
+Welcome to the Local File Distributor!
+
+This file is automatically shared from your server's default shared folder.
+
+How it works:
+1. Put any files you want to share inside this "shared" folder.
+2. New files added here will automatically appear on the client dashboard.
+3. Other devices connected to your Wi-Fi, hotspot, or local network can scan the QR code or visit the server URL to download these files.
+
+Security Notice:
+- Access to files is strictly confined to this folder and its subdirectories.
+- Directory traversal attacks are blocked.
+- You can enable password protection in the Host Panel to restrict client access.
