@@ -1,6 +1,6 @@
 {
     "shared_folder": "D:\\lfdistributor\\shared",
-    "password_enabled": false,
-    "password": "",
+    "password_enabled": true,
+    "password": "12345678",
     "host_token": "cd81318cc93364eda41d83d564660382"
 }

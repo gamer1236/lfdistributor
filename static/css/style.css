@@ -99,7 +99,7 @@ header {
 .brand-icon svg {
     width: 1.5rem;
     height: 1.5rem;
-    fill: #white;
+    fill: none;
     color: white;
 }
 
@@ -109,6 +109,7 @@ header {
     letter-spacing: -0.025em;
     background: linear-gradient(135deg, #ffffff, #d1d5db);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -428,6 +429,7 @@ input:checked + .slider:before {
     color: #fff;
     background: linear-gradient(135deg, #fff, var(--text-secondary));
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
@@ -1116,4 +1118,12 @@ input:checked + .slider:before {
 .btn-delete svg {
     width: 1.1rem;
     height: 1.1rem;
+}
+
+/* Spacing Utilities */
+.mb-4 {
+    margin-bottom: 1.5rem;
+}
+.mt-4 {
+    margin-top: 1.5rem;
 }

@@ -99,8 +99,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    if (btnSaveConfig) {
-        btnSaveConfig.addEventListener('click', async () => {
+    const hostConfigForm = document.getElementById('host-config-form');
+    if (hostConfigForm) {
+        hostConfigForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
             const sharedFolder = sharedFolderText.textContent;
             const passwordEnabled = passwordEnableCheck.checked;
             const password = hostPwdInput.value.trim();
@@ -486,22 +488,24 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span>${file.download_count || 0}</span>
                     </div>
                 </td>
-                <td style="text-align: center; gap: 0.5rem; display: flex; justify-content: center;">
-                    <!-- Host can also download to test -->
-                    <a href="/download/${encodeURIComponent(file.rel_path)}" class="btn-download" title="Download File">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                            <polyline points="7 10 12 15 17 10"/>
-                            <line x1="12" x2="12" y1="15" y2="3"/>
-                        </svg>
-                    </a>
-                    
-                    <!-- Deletion action -->
-                    <button class="btn-delete" data-path="${file.rel_path}" title="Delete File">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>
-                        </svg>
-                    </button>
+                <td style="text-align: center;">
+                    <div style="display: inline-flex; gap: 0.5rem; justify-content: center; align-items: center; width: 100%;">
+                        <!-- Host can also download to test -->
+                        <a href="/download/${file.rel_path.split('/').map(encodeURIComponent).join('/')}" class="btn-download" title="Download File">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                <polyline points="7 10 12 15 17 10"/>
+                                <line x1="12" x2="12" y1="15" y2="3"/>
+                            </svg>
+                        </a>
+                        
+                        <!-- Deletion action -->
+                        <button class="btn-delete" data-path="${file.rel_path}" title="Delete File">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/>
+                            </svg>
+                        </button>
+                    </div>
                 </td>
             `;
             

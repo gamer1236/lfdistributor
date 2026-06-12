@@ -203,7 +203,10 @@ def is_client_authorized():
     # If client cookie matches the plain text password
     return client_auth == config.get('password')
 
-# --- ROUTES ---
+@app.route('/favicon.ico')
+def favicon():
+    """Serves an empty favicon to prevent browser console 404 errors."""
+    return send_file(io.BytesIO(b""), mimetype='image/x-icon')
 
 @app.route('/')
 def index():

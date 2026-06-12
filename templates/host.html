@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Local File Distributor - Host Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📦</text></svg>">
     <meta name="description" content="Host administration dashboard for file distributions.">
 </head>
 <body>
@@ -82,40 +83,42 @@
                         Configurations
                     </h2>
 
-                    <!-- Shared folder setting -->
-                    <div class="form-group">
-                        <label class="form-label">Active Shared Directory</label>
-                        <div class="folder-path-display" id="shared-folder-text">Loading directory...</div>
-                        <button class="btn btn-secondary" id="btn-browse-folder">
-                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/>
-                            </svg>
-                            Browse Directories
-                        </button>
-                    </div>
-
-                    <!-- Password protection toggles -->
-                    <div class="switch-group">
-                        <div class="switch-label-desc">
-                            <span class="switch-label">Password Lock</span>
-                            <span class="switch-sublabel">Restrict client access</span>
-                        </div>
-                        <label class="switch">
-                            <input type="checkbox" id="password-enable-check">
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
-                    <div id="password-setting-fields" style="display: none;">
+                    <form id="host-config-form">
+                        <!-- Shared folder setting -->
                         <div class="form-group">
-                            <label class="form-label" for="host-pwd-input">Access Password</label>
-                            <input type="password" id="host-pwd-input" class="form-input" placeholder="Set portal password...">
+                            <label class="form-label">Active Shared Directory</label>
+                            <div class="folder-path-display" id="shared-folder-text">Loading directory...</div>
+                            <button type="button" class="btn btn-secondary" id="btn-browse-folder">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2z"/>
+                                </svg>
+                                Browse Directories
+                            </button>
                         </div>
-                    </div>
 
-                    <button class="btn btn-primary" id="btn-save-config">
-                        Save Configurations
-                    </button>
+                        <!-- Password protection toggles -->
+                        <div class="switch-group">
+                            <div class="switch-label-desc">
+                                <span class="switch-label">Password Lock</span>
+                                <span class="switch-sublabel">Restrict client access</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="password-enable-check">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                        <div id="password-setting-fields" style="display: none;">
+                            <div class="form-group">
+                                <label class="form-label" for="host-pwd-input">Access Password</label>
+                                <input type="password" id="host-pwd-input" class="form-input" placeholder="Set portal password...">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="btn-save-config">
+                            Save Configurations
+                        </button>
+                    </form>
                 </div>
 
             </aside>
