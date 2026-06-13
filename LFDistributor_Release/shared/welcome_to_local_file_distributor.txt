@@ -1,0 +1,2 @@
+Welcome to Local File Distributor!
+Place files you want to share in this folder.

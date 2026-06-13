@@ -6,14 +6,97 @@ import math
 import time
 import secrets
 import threading
+import ctypes
+import sys
 from collections import defaultdict
 from flask import Flask, render_template, jsonify, request, send_file, Response, make_response
 
-app = Flask(__name__)
+# Detect if running in a PyInstaller bundle
+if getattr(sys, 'frozen', False):
+    # Running as compiled executable
+    BASE_DIR = os.path.dirname(sys.executable)
+    # Flask templates and static folder are inside the bundle
+    bundle_dir = sys._MEIPASS
+    template_folder = os.path.join(bundle_dir, 'templates')
+    static_folder = os.path.join(bundle_dir, 'static')
+    app = Flask(__name__, template_folder=template_folder, static_folder=static_folder)
+else:
+    # Running in normal python environment
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    app = Flask(__name__)
 
-# Constants
-CONFIG_FILE = 'config.json'
-DEFAULT_SHARED_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'shared'))
+# Constants and Directories
+CONFIG_DIR = os.path.join(BASE_DIR, 'config')
+CONFIG_FILE = os.path.join(CONFIG_DIR, 'config.json')
+DEFAULT_SHARED_DIR = os.path.abspath(os.path.join(BASE_DIR, 'shared'))
+LOGS_DIR = os.path.join(BASE_DIR, 'logs')
+ASSETS_DIR = os.path.join(BASE_DIR, 'assets')
+
+# Ensure essential directories exist
+for directory in [CONFIG_DIR, DEFAULT_SHARED_DIR, LOGS_DIR, ASSETS_DIR]:
+    if not os.path.exists(directory):
+        try:
+            os.makedirs(directory)
+        except Exception as e:
+            # Print to console before stdout redirection
+            print(f"Error creating directory {directory}: {e}")
+
+# Thread-safe logging to file and console
+class Logger(object):
+    def __init__(self, filename="server.log"):
+        self.terminal = sys.stdout
+        log_path = os.path.join(LOGS_DIR, filename)
+        try:
+            self.log = open(log_path, "a", encoding="utf-8")
+        except Exception:
+            self.log = None
+
+    def write(self, message):
+        if self.terminal:
+            self.terminal.write(message)
+        if self.log:
+            try:
+                self.log.write(message)
+                self.log.flush()
+            except Exception:
+                pass
+
+    def flush(self):
+        if self.terminal:
+            self.terminal.flush()
+        if self.log:
+            try:
+                self.log.flush()
+            except Exception:
+                pass
+
+sys.stdout = Logger("server.log")
+sys.stderr = Logger("server.log")
+
+# Resource integrity check
+def check_resources():
+    check_base = sys._MEIPASS if getattr(sys, 'frozen', False) else BASE_DIR
+    required_files = [
+        os.path.join(check_base, 'templates', 'index.html'),
+        os.path.join(check_base, 'templates', 'host.html'),
+        os.path.join(check_base, 'static', 'css', 'style.css'),
+        os.path.join(check_base, 'static', 'js', 'app.js'),
+        os.path.join(check_base, 'static', 'js', 'host.js')
+    ]
+    missing = []
+    for f in required_files:
+        if not os.path.exists(f):
+            missing.append(os.path.relpath(f, check_base))
+            
+    if missing:
+        error_msg = "The following required application files are missing:\n\n" + "\n".join(missing) + "\n\nPlease reinstall or repair the application."
+        if os.name == 'nt':
+            ctypes.windll.user32.MessageBoxW(0, error_msg, "Local File Distributor - Error", 0x10) # 0x10 is MB_ICONERROR
+        else:
+            print(f"Error: {error_msg}")
+        sys.exit(1)
+
+check_resources()
 
 # Thread-safe download counters
 download_counters = defaultdict(int)
@@ -524,6 +607,19 @@ def host_browse():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+def open_browser():
+    """Waits for Flask server to start and opens the default browser to the host page."""
+    import webbrowser
+    time.sleep(1.5)
+    config = load_config()
+    token = config.get('host_token')
+    # Use 127.0.0.1 instead of localhost for maximum reliability on Windows
+    url = f"http://127.0.0.1:5000/host?token={token}"
+    try:
+        webbrowser.open(url)
+    except Exception as e:
+        print(f"Error opening browser automatically: {e}")
+
 if __name__ == '__main__':
     config = load_config()
     local_ip = get_local_ip()
@@ -539,4 +635,6 @@ if __name__ == '__main__':
     print(f" * To manage remotely, visit: http://{local_ip}:{port}/host?token={config.get('host_token')}")
     print("="*60 + "\n")
     
+    # Start auto-open browser thread
+    threading.Thread(target=open_browser, daemon=True).start()
     app.run(host='0.0.0.0', port=port, debug=False, threaded=True)

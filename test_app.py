@@ -4,7 +4,7 @@ import json
 import unittest
 import tempfile
 import shutil
-from app import app, load_config, save_config, get_safe_filepath, get_shared_files
+from app import app, load_config, save_config, get_safe_filepath, get_shared_files, CONFIG_FILE
 
 class LocalFileDistributorTestCase(unittest.TestCase):
 
@@ -33,9 +33,9 @@ class LocalFileDistributorTestCase(unittest.TestCase):
             f.write("This is a mock PDF file content.")
             
         # Create a dummy config file
-        self.original_config_exists = os.path.exists('config.json')
+        self.original_config_exists = os.path.exists(CONFIG_FILE)
         if self.original_config_exists:
-            with open('config.json', 'r') as f:
+            with open(CONFIG_FILE, 'r') as f:
                 self.original_config = json.load(f)
         else:
             self.original_config = None
@@ -57,8 +57,8 @@ class LocalFileDistributorTestCase(unittest.TestCase):
         # Restore original config
         if self.original_config:
             save_config(self.original_config)
-        elif os.path.exists('config.json'):
-            os.remove('config.json')
+        elif os.path.exists(CONFIG_FILE):
+            os.remove(CONFIG_FILE)
 
     def test_safe_path_resolution(self):
         """Verifies that only files under the shared directory are resolved, and traversals are blocked."""
